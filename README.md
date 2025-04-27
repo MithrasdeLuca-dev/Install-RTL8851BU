@@ -75,7 +75,7 @@ cd RTL8851bu
 Para compilar e instalar o driver manualmente:
 
 ```bash
-make -j$(nproc)  # Ou use 'make -j16 "número de núcleos do processador>"
+make -j$(nproc)  # Ou use 'make -j16 "número de núcleos do processador"
 sudo make install
 ```
 
@@ -111,6 +111,12 @@ ls /sys/class/net
 
 ## 5. Renomear Interface de Rede (Opcional)
 
+**Descobrir MAC Address:**
+
+```bash
+ip link
+```
+
 1. Criar/editar regra udev:
 
 ```bash
@@ -127,12 +133,6 @@ SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="XX:XX:XX:XX:XX:XX", NAME="wlan0
 
 ```bash
 sudo udevadm control --reload-rules
-```
-
-**Descobrir MAC Address:**
-
-```bash
-ip link
 ```
 
 ---
