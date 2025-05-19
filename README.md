@@ -1,10 +1,16 @@
 # 📡 Instalação de Placa USB Wi-Fi + Bluetooth 5.3 RTL8851BU no Linux
 
-# Driver Realtek Linux para dispositivos USB AX900 Wifi 6 8851bu e 8831bu
+## 🔧 Sobre este driver
 
-Este driver é destinado a dispositivos **Realtek USB AX900** que utilizam os chipsets **Realtek 8851bu** ou **8831bu**.
+Este repositório contém os drivers para dispositivos **Realtek USB AX900**, que utilizam os chipsets **RTL8851BU** e **RTL8831BU**.
 
-Isso inclui adaptadores **AX900 USB WiFi 6** e **Bluetooth 5.3** sem marca, vendidos em plataformas como **AliExpress** e **Amazon**.
+Esses drivers são compatíveis com adaptadores USB Wi-Fi 6 + Bluetooth 5.3 — frequentemente vendidos sem marca em sites como **AliExpress** e **Amazon**.
+
+## 📦 Fonte do driver
+
+Este projeto é um clone do repositório original:
+
+* 🔗 [Repositório Original – biglinux/rtl8831](https://github.com/biglinux/rtl8831)
 
 # Para instalação:
 
