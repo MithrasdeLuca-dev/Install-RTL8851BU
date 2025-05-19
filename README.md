@@ -85,27 +85,93 @@ make -j$(nproc)  # Ou use 'make -j16 "número de núcleos do processador"
 sudo make install
 ```
 
-### Instalação Usando DKMS
+Claro! Aqui está a versão final com a explicação adicional ao final, formatada de forma clara:
 
-1. **Adicionar o Módulo ao DKMS:**
+---
+
+## 🔧 Instalação do Módulo com DKMS (Versão 0.1)
+
+Estas instruções utilizam o DKMS (Dynamic Kernel Module Support) para compilar e instalar automaticamente o módulo em todas as versões do kernel atuais e futuras.
+
+---
+
+### 1. 📥 Adicionar o Módulo ao DKMS
+
+No diretório onde está o código-fonte do módulo (por exemplo, com o `dkms.conf` presente):
 
 ```bash
 sudo dkms add .
 ```
 
-2. **Construir o Módulo:**
+> Isso registra o módulo no DKMS, associando-o à versão informada no arquivo `dkms.conf`.
+
+Verifique se foi adicionado corretamente:
 
 ```bash
-sudo dkms build RTL8851bu/1.0  # Certifique-se de que a versão é compatível com seu módulo
+sudo dkms status
 ```
 
-3. **Instalar o Módulo com DKMS:**
+---
+
+### 2. 🛠️ Compilar o Módulo
+
+Antes de compilar, confirme que a versão listada com `dkms status` corresponde à que será usada:
 
 ```bash
-sudo dkms install RTL8851bu/1.0
+sudo dkms build RTL8851bu/0.1
 ```
 
-O comando `dkms add .` registra o módulo no sistema, `dkms build` compila o driver, e `dkms install` instala o módulo no sistema.
+---
+
+### 3. 📦 Instalar o Módulo no Sistema
+
+Instale o módulo compilado para torná-lo disponível para uso com o kernel atual:
+
+```bash
+sudo dkms install RTL8851bu/0.1
+```
+
+---
+
+### 🧹 (Opcional) Remover o Módulo
+
+Se quiser desinstalar ou remover o módulo:
+
+```bash
+sudo dkms remove RTL8851bu/0.1 --all
+```
+---
+
+### ℹ️ ✅ Resumo dos Comandos
+
+```bash
+cd /caminho/do/modulo
+sudo dkms add .
+sudo dkms status
+sudo dkms build RTL8851bu/0.1
+sudo dkms install RTL8851bu/0.1
+sudo dkms remove RTL8851bu/0.1 --all
+```
+
+#### 🔍 Descrição dos Comandos
+
+* `cd /caminho/do/modulo`
+  Navega até o diretório onde está o código-fonte do módulo, incluindo o arquivo `dkms.conf`.
+
+* `sudo dkms add .`
+  Registra o módulo no sistema, vinculando sua versão ao DKMS com base no `dkms.conf`.
+
+* `sudo dkms status`
+  Lista os módulos registrados no DKMS, mostrando seus estados (instalado, compilado, etc).
+
+* `sudo dkms build RTL8851bu/0.1`
+  Compila o código-fonte do módulo para a versão atual do kernel.
+
+* `sudo dkms install RTL8851bu/0.1`
+  Instala o módulo compilado no sistema, tornando-o ativo e carregável.
+
+* `sudo dkms remove RTL8851bu/0.1 --all`
+  Remove completamente o módulo de todas as versões do kernel registradas no DKMS.
 
 ---
 ## 4. Listar Interfaces de Rede
