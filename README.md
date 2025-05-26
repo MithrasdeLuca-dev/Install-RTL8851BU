@@ -61,7 +61,7 @@ sudo apt update && sudo apt upgrade -y
 ## 2. Instalar Ferramentas Necessárias
 
 ```bash
-sudo apt install build-essential dkms linux-headers-$(uname -r) git iw wireless-tools wpasupplicant -y
+sudo apt install build-essential dkms linux-headers-$(uname -r) git iw wpasupplicant -y
 ```
 ---
 ## 3. Clonar, Renomear, Compilar e Instalar o Driver RTL8851BU
