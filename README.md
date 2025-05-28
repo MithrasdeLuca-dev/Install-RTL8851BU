@@ -11,64 +11,77 @@ Esses drivers são compatíveis com adaptadores USB Wi-Fi 6 + Bluetooth 5.3 — 
 Este projeto é um clone do repositório original:
 
 * 🔗 [Repositório Original – biglinux/rtl8831](https://github.com/biglinux/rtl8831)
+* 🔗 [Outro repositório atualizado](https://github.com/fofajardo/rtl8851bu.git)
 
-# Para instalação:
+---
 
 ## 🔧 Ambiente
 
-- **Sistema Operacional**: Ubuntu 24.04 (ou equivalente baseado em Ubuntu)
-- **Kernel**: (confirme com `uname -r`, exemplo: 6.8)
-- **Placa**: (ex: RTL8851BU baseada, informe o modelo que usou)
+* **Sistema Operacional**: Ubuntu 24.04 (ou equivalente baseado em Ubuntu)
+* **Kernel**: (confirme com `uname -r`, exemplo: 6.8)
+* **Placa**: (ex: RTL8851BU baseada – informe o modelo utilizado)
 
 ---
 
 ## ⚙️ Ferramentas Utilizadas
 
 ### 1. Netplan
-- **O que é**: Ferramenta para configuração de rede em sistemas Ubuntu modernos. Usando arquivos YAML, ela simplifica a configuração de interfaces de rede, tanto para Ethernet quanto para Wi-Fi.
-- **Função**: Permite que você defina de maneira simples e legível as configurações de rede, como DHCP, DNS, configurações de Wi-Fi e roteamento de tráfego. O Netplan pode ser configurado para usar diferentes backends, como networkd ou NetworkManager.
+
+* **O que é**: Ferramenta para configuração de rede em sistemas Ubuntu modernos. Utiliza arquivos YAML para configurar interfaces Ethernet e Wi-Fi.
+* **Função**: Define de forma legível configurações como DHCP, DNS, Wi-Fi e rotas. Pode usar como backend o `networkd` ou `NetworkManager`.
 
 ### 2. systemd-networkd
-- **O que é**: Backend utilizado pelo Netplan para configurar e gerenciar as interfaces de rede.
-- **Função**: Quando o Netplan está configurado para usar networkd, ele aplica as configurações de rede diretamente através desse serviço, que é mais leve e recomendado para servidores, enquanto o NetworkManager é melhor para ambientes desktop.
+
+* **O que é**: Backend usado pelo Netplan para gerenciar interfaces de rede.
+* **Função**: Quando o Netplan está configurado com `networkd`, este aplica as configurações. Ideal para servidores. `NetworkManager` é mais indicado para desktops.
 
 ### 3. make
-- **O que é**: Ferramenta de automação de compilação de código-fonte.
-- **Função**: Usada para compilar o driver RTL8851BU a partir do código-fonte. O comando `make` processa o arquivo Makefile para construir o driver.
+
+* **O que é**: Ferramenta de automação de compilação.
+* **Função**: Compila o driver RTL8851BU com base no arquivo `Makefile`.
 
 ### 4. dkms (Dynamic Kernel Module Support)
-- **O que é**: Ferramenta que facilita a recompilação de módulos do kernel ao atualizar o sistema.
-- **Função**: Permite que o driver seja recompilado automaticamente quando o kernel é atualizado, garantindo que o driver funcione com versões futuras do kernel.
+
+* **O que é**: Ferramenta para recompilação de módulos após atualizações de kernel.
+* **Função**: Garante que o driver continue funcional mesmo após atualizações de kernel.
 
 ### 5. iw, wireless-tools
-- **O que é**: Conjunto de ferramentas para diagnosticar e configurar interfaces de rede sem fio.
-- **Função**: Utilizadas para escanear redes Wi-Fi e verificar a conexão das interfaces de rede sem fio, como o comando `iwlist` para escanear redes e `iwconfig` para visualizar e configurar interfaces Wi-Fi.
+
+* **O que é**: Conjunto de ferramentas para diagnóstico e configuração de redes Wi-Fi.
+* **Função**: Scaneia redes (`iwlist`) e configura interfaces (`iwconfig`).
 
 ### 6. wpasupplicant
-- **O que é**: Software de autenticação para redes Wi-Fi protegidas com WPA/WPA2/WPA3.
-- **Função**: Responsável por conectar o sistema a redes Wi-Fi seguras, gerenciando as credenciais de autenticação.
+
+* **O que é**: Software de autenticação para redes Wi-Fi protegidas.
+* **Função**: Conecta o sistema a redes WPA/WPA2/WPA3.
 
 ---
 
 # 🚀 Passo a Passo
+
 ---
+
 ## 1. Atualizar o Sistema
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
+
 ---
+
 ## 2. Instalar Ferramentas Necessárias
 
 ```bash
-sudo apt install build-essential dkms linux-headers-$(uname -r) git iw wpasupplicant -y
+sudo apt install -y build-essential dkms linux-headers-$(uname -r) git iw wpasupplicant wireless-tools network-manager
 ```
+
 ---
+
 ## 3. Clonar, Renomear, Compilar e Instalar o Driver RTL8851BU
 
-Ao optar pela instalação manual, você precisará reinstalar o driver após cada atualização do kernel. Para evitar esse processo, é recomendável instalar usando o **DKMS**, que gerencia automaticamente a recompilação do driver após atualizações do kernel.
+> A instalação manual requer reinstalação após cada atualização de kernel. Para evitar isso, recomenda-se usar o **DKMS**.
 
-### Clonando o Repositório e Renomeando
+### Clonar o Repositório e Renomear
 
 ```bash
 git clone https://github.com/MithrasdeLuca-dev/Install-RTL8851BU.git
@@ -78,32 +91,28 @@ cd RTL8851bu
 
 ### Instalação Manual
 
-Para compilar e instalar o driver manualmente:
-
 ```bash
-make -j$(nproc)  # Ou use 'make -j16 "número de núcleos do processador"
+make -j$(nproc)  # Ou especifique: make -j16
 sudo make install
 ```
-
-Claro! Aqui está a versão final com a explicação adicional ao final, formatada de forma clara:
 
 ---
 
 ## 🔧 Instalação do Módulo com DKMS (Versão 0.1)
 
-Estas instruções utilizam o DKMS (Dynamic Kernel Module Support) para compilar e instalar automaticamente o módulo em todas as versões do kernel atuais e futuras.
+Utilize o DKMS para compilar e instalar o módulo automaticamente em todas as versões do kernel atuais e futuras.
 
 ---
 
 ### 1. 📥 Adicionar o Módulo ao DKMS
 
-No diretório onde está o código-fonte do módulo (por exemplo, com o `dkms.conf` presente):
+No diretório com o `dkms.conf`:
 
 ```bash
 sudo dkms add .
 ```
 
-> Isso registra o módulo no DKMS, associando-o à versão informada no arquivo `dkms.conf`.
+> Registra o módulo e sua versão com base no `dkms.conf`.
 
 Verifique se foi adicionado corretamente:
 
@@ -115,8 +124,6 @@ sudo dkms status
 
 ### 2. 🛠️ Compilar o Módulo
 
-Antes de compilar, confirme que a versão listada com `dkms status` corresponde à que será usada:
-
 ```bash
 sudo dkms build RTL8851bu/0.1
 ```
@@ -124,8 +131,6 @@ sudo dkms build RTL8851bu/0.1
 ---
 
 ### 3. 📦 Instalar o Módulo no Sistema
-
-Instale o módulo compilado para torná-lo disponível para uso com o kernel atual:
 
 ```bash
 sudo dkms install RTL8851bu/0.1
@@ -135,11 +140,10 @@ sudo dkms install RTL8851bu/0.1
 
 ### 🧹 (Opcional) Remover o Módulo
 
-Se quiser desinstalar ou remover o módulo:
-
 ```bash
 sudo dkms remove RTL8851bu/0.1 --all
 ```
+
 ---
 
 ### ℹ️ ✅ Resumo dos Comandos
@@ -155,53 +159,44 @@ sudo dkms remove RTL8851bu/0.1 --all
 
 #### 🔍 Descrição dos Comandos
 
-* `cd /caminho/do/modulo`
-  Navega até o diretório onde está o código-fonte do módulo, incluindo o arquivo `dkms.conf`.
-
-* `sudo dkms add .`
-  Registra o módulo no sistema, vinculando sua versão ao DKMS com base no `dkms.conf`.
-
-* `sudo dkms status`
-  Lista os módulos registrados no DKMS, mostrando seus estados (instalado, compilado, etc).
-
-* `sudo dkms build RTL8851bu/0.1`
-  Compila o código-fonte do módulo para a versão atual do kernel.
-
-* `sudo dkms install RTL8851bu/0.1`
-  Instala o módulo compilado no sistema, tornando-o ativo e carregável.
-
-* `sudo dkms remove RTL8851bu/0.1 --all`
-  Remove completamente o módulo de todas as versões do kernel registradas no DKMS.
+* `cd /caminho/do/modulo`: Acessa o diretório do código-fonte com o `dkms.conf`.
+* `sudo dkms add .`: Registra o módulo.
+* `sudo dkms status`: Exibe o status dos módulos registrados.
+* `sudo dkms build`: Compila o módulo.
+* `sudo dkms install`: Instala o módulo no sistema.
+* `sudo dkms remove`: Remove o módulo de todas as versões do kernel.
 
 ---
+
 ## 4. Listar Interfaces de Rede
 
 ```bash
 ls /sys/class/net
 ```
+
 ---
 
 ## 5. Renomear Interface de Rede (Opcional)
 
-**Descobrir MAC Address:**
+### Descobrir MAC Address
 
 ```bash
 ip link
 ```
 
-1. Criar/editar regra udev:
+### Criar/Editar regra udev
 
 ```bash
 sudo nano /etc/udev/rules.d/10-network.rules
 ```
 
-2. Adicionar:
+### Exemplo de regra:
 
 ```bash
 SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="XX:XX:XX:XX:XX:XX", NAME="wlan0"
 ```
 
-3. Aplicar regras:
+### Aplicar regras:
 
 ```bash
 sudo udevadm control --reload-rules
@@ -211,20 +206,26 @@ sudo udevadm control --reload-rules
 
 ## 6. Configurar o Netplan
 
-1. Acessar diretório:
+### Acessar diretório:
 
 ```bash
 cd /etc/netplan/
 ls
 ```
 
-2. Editar arquivo:
+### Editar arquivo Netplan:
 
 ```bash
-sudo nano installer-config.yaml
+sudo nano XX-installer-config.yaml
 ```
 
-3. Exemplo de configuração:
+### Exemplo 1: NetworkManager
+
+```bash
+nmcli device wifi connect "NOME_DA_REDE" password "SENHA_DA_REDE"
+```
+
+### Exemplo 2: Netplan (YAML)
 
 ```yaml
 network:
@@ -264,23 +265,28 @@ iwconfig
 ```bash
 sudo iwlist wlan0 scan | grep ESSID
 sudo iw dev wlan0 scan | grep SSID
+sudo nmcli device wifi list
 ```
 
 ---
 
-## 9. Aplicar Configuração do Netplan
+## 9. Aplicar Configuração do Netplan ou NetworkManager
 
 ```bash
 sudo netplan try
 sudo netplan apply
 sudo netplan --debug apply
+
+# Ativar e verificar NetworkManager
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
+sudo systemctl status NetworkManager
 ```
 
-**Caso ocorra uma falha no `netplan apply`:**
-- Verifique se o gerenciador de autenticação (wpa_supplicant) está ativo.
-- Verifique se o arquivo `.yaml` de configuração do Netplan está utilizando:
-  - As credenciais corretas da rede Wi-Fi (SSID e senha).
-  - O nome correto do dispositivo de rede (por exemplo, `wlan0`).
+> **Se `netplan apply` falhar:**
+
+* Verifique se o `wpa_supplicant` está ativo.
+* Verifique SSID, senha e o nome do dispositivo (`wlan0`) no `.yaml`.
 
 ---
 
@@ -296,7 +302,7 @@ journalctl -u systemd-networkd
 
 ## 11. Diagnóstico de Hardware de Rede
 
-### Mostrar detalhes dos dispositivos de rede:
+### Exibir informações dos dispositivos de rede:
 
 ```bash
 lshw -C network
@@ -314,17 +320,6 @@ sudo dmesg | grep 8851bu
 ```bash
 lspci -k | grep -A 3 -i wireless
 lsusb
-```
-
----
-
-## 12. Ativar e Verificar Interface Wi-Fi
-
-```bash
-ip a
-sudo ip link set wlan0 up
-sudo ip link show wlan0
-iwconfig
 ```
 
 ---
